@@ -36,11 +36,11 @@ linked-hash-map = "0.5.6"
 
 [lib]
 name = "clvm_tools_rs"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["staticlib", "cdylib"]
 
 [features]
-extension-module = ["pyo3"]
-default = ["extension-module"]
+# extension-module = ["pyo3"]
+# default = ["extension-module"]
 
 [target.'cfg(target_family="wasm")'.dependencies]
 wasm-bindgen = { version = "0.2.80", features = ["serde-serialize"] }
@@ -49,11 +49,11 @@ js-sys = "0.3.58"
 getrandom = { version = "0.2", features = ["js"] }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-pyo3 = { version = "0.14.2", features = ["abi3-py37", "extension-module"], optional = true }
+# pyo3 = { version = "0.14.2", features = ["abi3-py37", "extension-module"], optional = true }
 getrandom = { version = "0.2" }
 
 [build-dependencies]
-pyo3-build-config = "0.15.1"
+# pyo3-build-config = "0.15.1"
 
 [[bin]]
 name = "opd"
