@@ -12,7 +12,7 @@ use clvm_rs::run_program::run_program;
 use crate::classic::clvm::serialize::{sexp_from_stream, sexp_to_stream, SimpleCreateCLVMObject};
 use crate::classic::clvm::sexp::enlist;
 use crate::classic::clvm_tools::binutils::assemble_from_ir;
-use crate::classic::clvm::casts::{bigint_to_bytes, TConvertOption};
+use crate::classic::clvm::casts::{bigint_to_bytes, int_from_bytes, TConvertOption};
 use num_bigint::ToBigInt;
 use crate::classic::clvm::sexp::rest;
 use crate::classic::clvm::sexp::first;
@@ -51,6 +51,15 @@ pub extern fn int_to_bytes(value: i64) -> *mut c_char {
   let big = value.to_bigint().unwrap();
   let intbytes = bigint_to_bytes(&big, Some(TConvertOption { signed: true })).unwrap();
   CString::new(intbytes.hex()).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub extern fn int_from_bytes_swift(hex_str: *const c_char) -> *mut c_char {
+  let bytes_str = get_string(hex_str);
+  let mut allocator = Allocator::new();
+  let bytes = Bytes::new(Some(BytesFromType::Hex(bytes_str)));
+  let int = int_from_bytes(&mut allocator, bytes, Some(TConvertOption { signed: true })).unwrap();
+  CString::new(int.to_string()).unwrap().into_raw()
 }
 
 pub fn sexp_as_bin(allocator: &mut Allocator, sexp: NodePtr) -> Bytes {
